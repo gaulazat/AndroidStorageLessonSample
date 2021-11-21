@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Environment.DIRECTORY_DCIM
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -72,6 +73,15 @@ class MainActivity : AppCompatActivity() {
         download_image_internal.setOnClickListener {
             downloadImageToAppFolder()
         }
+        move_image_to_internal.setOnClickListener {
+            moveFileToInternal()
+        }
+        move_image_to_external_app_specific.setOnClickListener {
+            moveFileToExternalAppSpecific()
+        }
+        move_image_to_external_public.setOnClickListener {
+            moveFileToExternalPublic()
+        }
     }
 
     private fun downloadImage() {
@@ -101,6 +111,27 @@ class MainActivity : AppCompatActivity() {
         } else {
             downloadToInternalFolder()
         }
+    }
+
+    private fun moveFileToInternal() {
+        val dogecoinIs = assets.open("dogecoin.jpeg")
+        val newFile = File(filesDir, "dogecoin.jpeg")
+        Log.d("Internal path", newFile.absolutePath)
+        dogecoinIs.copyTo(FileOutputStream(newFile))
+    }
+
+    private fun moveFileToExternalAppSpecific() {
+        val dogecoinIs = assets.open("dogecoin.jpeg")
+        val newFile = File(getExternalFilesDir(Environment.DIRECTORY_RINGTONES), "dogecoin.jpeg")
+        Log.d("External path", newFile.absolutePath)
+        dogecoinIs.copyTo(FileOutputStream(newFile))
+    }
+
+    private fun moveFileToExternalPublic() {
+        val dogecoinIs = assets.open("dogecoin.jpeg")
+        val newFile = File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM), "dogecoin.jpeg")
+        Log.d("External public path", newFile.absolutePath)
+        dogecoinIs.copyTo(FileOutputStream(newFile))
     }
 
     //Downloading file to Internal Folder
@@ -148,7 +179,7 @@ class MainActivity : AppCompatActivity() {
             context as Activity,
             arrayOf(
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
             ), PERMISSION_READ_EXTERNAL_STORAGE
         )
     }
